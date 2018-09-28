@@ -43,7 +43,7 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
     @Override
     public List<ThirdBean> initThirdData(int firstPosition, int secondPosition) {
         if (showNum < 3) {
-            return new ArrayList<>();
+            return new ArrayList<ThirdBean>();
         } else {
             return firstBeans.get(firstPosition).getSeconds()
                     .get(secondPosition).getThirds();
@@ -54,7 +54,7 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
     @Override
     public List<FourthBean> initFourthData(int firstPosition, int secondPosition, int thirdPosition) {
         if (showNum < 4) {
-            return new ArrayList<>();
+            return new ArrayList<FourthBean>();
         } else {
             return firstBeans.get(firstPosition).getSeconds()
                     .get(secondPosition).getThirds()
@@ -66,7 +66,7 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
     @Override
     public List<FifthBean> initFifthData(int firstPosition, int secondPosition, int thirdPosition, int fourthPosition) {
         if (showNum < 5) {
-            return new ArrayList<>();
+            return new ArrayList<FifthBean>();
         } else {
             return firstBeans.get(firstPosition).getSeconds()
                     .get(secondPosition).getThirds()
