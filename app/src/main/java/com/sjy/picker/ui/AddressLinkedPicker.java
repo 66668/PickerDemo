@@ -1,4 +1,5 @@
 package com.sjy.picker.ui;
+
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -50,7 +51,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * **              佛祖保佑  镇类之宝             **
  * ***********************************************
  * <p>
- * 动态住址联动选择器：最多5个选择器（数据由后台控制）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
+ * 动态住址联动选择器：最多5个选择器，最少2个选择器（数据由后台控制）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
  * <p>
  * 具体模式：
  * （1）最全5个-大门门禁：小区/楼号/单元/楼层/房间号
@@ -60,7 +61,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * <p>
  * 使用规则：
  * xml布局中添加AddressLinkedPicker的完整路径
- * 代码中 
+ * 代码中
  */
 public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数据
         , Snd extends LinkedSecondItem<Trd>//第二条数据
@@ -278,7 +279,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     selectFourthPosition = 0;//重置第4级索引
                 } else {
                     selectThirdPosition = 0;//重置第三级索引
-                    c = 0;//重置第4级索引
+                    selectFourthPosition = 0;//重置第4级索引
                     selectFifthPosition = 0;//重置第5级索引
                 }
                 //根据第一级数据获取第二级数据
