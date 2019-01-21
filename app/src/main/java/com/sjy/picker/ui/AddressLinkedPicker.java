@@ -278,7 +278,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     selectFourthPosition = 0;//重置第4级索引
                 } else {
                     selectThirdPosition = 0;//重置第三级索引
-                    selectFourthPosition = 0;//重置第4级索引
+                    c = 0;//重置第4级索引
                     selectFifthPosition = 0;//重置第5级索引
                 }
                 //根据第一级数据获取第二级数据
@@ -300,7 +300,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                 }
 
@@ -312,7 +312,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                     //根据第4级数据获取第5级数据
                     List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
@@ -361,7 +361,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                 }
 
@@ -373,7 +373,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                     //根据第4级数据获取第5级数据
                     List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
@@ -410,7 +410,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     if (provider.showNum == 4) {
                         //根据第3级数据获取第4级数据
                         List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                        selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                        selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                         fourthView.setItems(fourthBeans, selectFourthPosition);
                     }
 
@@ -418,7 +418,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     if (provider.showNum == 5) {
                         //根据第3级数据获取第4级数据
                         List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                        selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
+                        selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                         fourthView.setItems(fourthBeans, selectFourthPosition);
                         //根据第4级数据获取第5级数据
                         List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
