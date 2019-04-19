@@ -16,7 +16,7 @@
 
 只贴了2张图，支持最低1级联动，最大5级联动的动态联动效果：
 
-
- ![3级联动图](https://github.com/66668/PickerDemo/blob/master/pictures/3_picker.jpeg)
+ <img src="https://github.com/66668/PickerDemo/blob/master/pictures/3_picker.jpeg" with="320" height="500" alt="3级联动图"/>
  
- ![5级联动图](https://github.com/66668/PickerDemo/blob/master/pictures/5_picker.jpeg)
+ <img src="https://github.com/66668/PickerDemo/blob/master/pictures/5_picker.jpeg" with="320" height="500" alt="5级联动图"/>
+ 
