@@ -5,6 +5,7 @@
     android:fromDegrees="0"
     android:toDegrees="360"
     android:interpolator="@android:anim/accelerate_decelerate_interpolator" >
+    <!--没有数据时候，做一个旋转的动画，该处用ic图代替-->
     <bitmap
         android:antialias="true"
         android:filter="true"

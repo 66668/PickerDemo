@@ -16,6 +16,10 @@ import java.util.List;
 public class DataUtils {
 
 
+    /**
+     * 使用假数据测试
+     * @return
+     */
     public static AddressData getData() {
 
         String[] labels = new String[]{"小区", "楼", "单元", "层", "房间号"};

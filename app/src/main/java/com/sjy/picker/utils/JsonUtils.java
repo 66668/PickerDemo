@@ -19,11 +19,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 呼叫开门 PhoneAndRoomAct中 解析原始json房间号的工具类
- * 说明：运维人员添加的数据，可能不满足标准的数据调用，需要在这里补空数据。
+ * 实战项目的json处理，
+ * <p>
+ * 贴出来让你们瞅瞅
+ *
+ * <p>
  */
 public class JsonUtils {
-    public static final String TAG = "RJ_PHONE";
+    public static final String TAG = "SJY";
     private static AddressData mprovider = null;
 
     public static AddressData getProvider() {
@@ -35,38 +38,41 @@ public class JsonUtils {
     }
 
     /**
-     * 在UI界面中，放在异步中处理该方法
-     *
-     * @param orgObj
+     * @param orgObj    {"tree":{完整json小区数据，从level=1开始}，"current_node_id":"挂载的节点"}
      * @param currentId 该id一般为单元id
      * @return
      */
     public static AddressData loadRoomData(JSONObject orgObj, int currentId) {
-        Log.d("SJY", "原始房间数据-->缓存数据");
+
         //变量
         AddressData provider = null;
         String[] labels = null;// 标签数组，由labelList转换
         int showNum = 2;// 默认为单元门下，showNum=labelList.size()
         List<String> labelList = new ArrayList<String>();// 用于保存标签和获取筛选器的个数
         List<FirstBean> firstBeans = new ArrayList<FirstBean>();//
-        int base_Node_id = orgObj.getIntValue("current_node_id");
+        int base_Node_id = orgObj.getIntValue("current_node_id");//该值和currentId是一样的
         //
-        Log.d(TAG, "目标节点id=" + currentId + "--跟节点id=" + base_Node_id);
-        Log.d(TAG, "原始数据：" + orgObj.toJSONString());//
-        //二道门节点数据
-        JSONObject baseObj = orgObj.getJSONObject("tree");//tree下小区层数据 level=1
-        Log.d(TAG, "获取目标数据：" + baseObj.toJSONString());
+
+        Log.d(TAG, "原始json数据：" + orgObj.toJSONString());//
+        //完整节点jsonobj数据， 从level=1开始
+        JSONObject baseObj = orgObj.getJSONObject("tree");//tree下小区层数据 从level=1开始
+        Log.d(TAG, "完整小区层级数据：" + baseObj.toJSONString());
+
         //
         if (baseObj == null || !baseObj.containsKey("child")) {
             Log.e(TAG, "请重新配置，获取接口信息失败");
             return null;
         }
+
         //获取currentId下的数据list
         JSONArray targetArray = null;
-        //先判断小区层是否满足（小区不是list,需要单独判断 坑啊）
+
+        //level=1的判断（小区不是list,需要单独判断 ），该处获取的数据，是挂在小区节点上（是level=1还是level=2需要进一步判断）
         if (currentId == baseObj.getIntValue("node_id")) {
+            Logg.d("SJY", "目标数据从level=1处获取到");
             targetArray = baseObj.getJSONArray("child");
-        } else {//再判断二道门层级下 是否满足
+        } else {//level=2/3的判断
+            Logg.d("SJY", "目标数据从level=2/3处获取到");
             targetArray = getPickerOrgData(currentId, baseObj.getJSONArray("child"));
         }
 
@@ -81,28 +87,49 @@ public class JsonUtils {
             Log.e(TAG, "挂载信息全为空，无法添加标签，请房间节点务必添加一个非空信息");
             return null;
         }
-        if (targetArray.getJSONObject(0).getString("level").equals("2")) {
-            labelList.add("小区");
-            labelList.add("楼号");
-            labelList.add("单元");
-            labelList.add("层");
-            labelList.add("房间号");
-        } else if (targetArray.getJSONObject(0).getString("level").equals("3")) {
-            labelList.add("楼号");
-            labelList.add("单元");
-            labelList.add("层");
-            labelList.add("房间号");
-        } else if (targetArray.getJSONObject(0).getString("level").equals("4")) {
-            labelList.add("单元");
-            labelList.add("层");
-            labelList.add("房间号");
-        } else if (targetArray.getJSONObject(0).getString("level").equals("5")) {
-            labelList.add("层");
-            labelList.add("户");
-        } else if (targetArray.getJSONObject(0).getString("level").equals("6")) {
-            //不会出现，最少两个筛选：层+房间号
-            labelList.add("户");
+        //从数组中遍历，添加标签
+        for (int i = 0; i < targetArray.size(); i++) {
+            String level = targetArray.getJSONObject(i).getString("level");
+            //屏蔽影响因素
+            if (level.equals("999")) {
+                continue;
+            } else {
+                if (targetArray.getJSONObject(i).getString("level").equals("2")) {
+                    labelList.add("小区");//二道门的小区
+                    labelList.add("楼号");
+                    labelList.add("单元");
+                    labelList.add("层");
+                    labelList.add("房间号");
+                    Logg.d(TAG, "labelList--2");
+                } else if (targetArray.getJSONObject(i).getString("level").equals("3")) {
+                    labelList.add("楼号");
+                    labelList.add("单元");
+                    labelList.add("层");
+                    labelList.add("房间号");
+                    Logg.d(TAG, "labelList--3");
+                } else if (targetArray.getJSONObject(i).getString("level").equals("4")) {
+                    labelList.add("单元");
+                    labelList.add("层");
+                    labelList.add("房间号");
+                    Logg.d(TAG, "labelList--4");
+                } else if (targetArray.getJSONObject(i).getString("level").equals("5")) {
+                    labelList.add("层");
+                    labelList.add("户");
+                    Logg.d(TAG, "labelList--5");
+                } else if (targetArray.getJSONObject(i).getString("level").equals("6")) {
+                    //不会出现，最少1个筛选：层+房间号
+                    labelList.add("户");
+                    Logg.d(TAG, "labelList--6");
+                } else {
+                    Logg.e(TAG, "labelList--获取异常");
+                }
+                //拿到标签，跳出for
+                if(labelList.size()>0){
+                    break;
+                }
+            }
         }
+
         //////////////////////////////////////第1层数据--开始////////////////////////////////////////////
         // 第一层数据 第一层没有空的情况
         for (int i = 0; i < targetArray.size(); i++) {
