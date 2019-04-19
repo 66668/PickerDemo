@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     //测试数据1
     private JSONObject obj1;
     //该值来自obj1
-    private int curInt1 = 113694;//切换值：111056 （挂在level=1小区上）/113687 (挂在level=2二道门小区上) / 113688 (挂在level=3栋上) / 113694 (挂在level=4单元上) / 113736 (挂在level=4层上)
+    private int curInt1 = 113688;//切换值：111056 （挂在level=1小区上）/113687 (挂在level=2二道门小区上) / 113688 (挂在level=3栋上) / 113694 (挂在level=4单元上) / 113736 (挂在level=4层上)
 
     //测试数据2
     private JSONObject obj2;
@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
                     //测试1：自定义生成
 //                    return  DataUtils.getData();
 
-                    //测试2：后台数据 obj1
-//                    return (AddressData) JsonUtils.loadRoomData(obj1, curInt1);
+//                    测试2：后台数据 obj1
+                    return (AddressData) JsonUtils.loadRoomData(obj1, curInt1);
 
                     //测试3：后台数据 obj2
-                    return JsonUtils.loadRoomData(obj2, curInt2);
+//                    return JsonUtils.loadRoomData(obj2, curInt2);
                 }
 
                 @Override

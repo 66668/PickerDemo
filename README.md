@@ -1,5 +1,8 @@
 # PickerDemo
-测试用的后台json数据：
+
+## UI修改
+请在lib_picker中修改自己需要的UI样式
+## 测试数据：
 
 1. 后台返回的json小区数据1：
 
@@ -8,3 +11,12 @@
 2. 后台返回的json小区数据2(json都没有level=2节点，开发规定)：
     
     {"tree":{"node_name":"测试无二道门","parent_id":-1,"node_id":136779,"child":[{"node_name":"管理处","parent_id":136779,"node_id":136810,"child":[],"level":"999"},{"node_name":"1栋","parent_id":136779,"node_id":136780,"child":[{"node_name":"1单元","parent_id":136780,"node_id":136782,"child":[{"node_name":"1层","parent_id":136782,"node_id":136786,"child":[{"node_name":"0101","parent_id":136786,"node_id":136794,"child":[],"level":"6"},{"node_name":"0102","parent_id":136786,"node_id":136795,"child":[],"level":"6"}],"level":"5"},{"node_name":"2层","parent_id":136782,"node_id":136787,"child":[{"node_name":"0201","parent_id":136787,"node_id":136796,"child":[],"level":"6"},{"node_name":"0202","parent_id":136787,"node_id":136797,"child":[],"level":"6"}],"level":"5"}],"level":"4"},{"node_name":"2单元","parent_id":136780,"node_id":136783,"child":[{"node_name":"1层","parent_id":136783,"node_id":136788,"child":[{"node_name":"0101","parent_id":136788,"node_id":136798,"child":[],"level":"6"},{"node_name":"0102","parent_id":136788,"node_id":136799,"child":[],"level":"6"}],"level":"5"},{"node_name":"2层","parent_id":136783,"node_id":136789,"child":[{"node_name":"0201","parent_id":136789,"node_id":136800,"child":[],"level":"6"},{"node_name":"0202","parent_id":136789,"node_id":136801,"child":[],"level":"6"}],"level":"5"}],"level":"4"}],"level":"3"},{"node_name":"2栋","parent_id":136779,"node_id":136781,"child":[{"node_name":"1单元","parent_id":136781,"node_id":136784,"child":[{"node_name":"1层","parent_id":136784,"node_id":136790,"child":[{"node_name":"0101","parent_id":136790,"node_id":136802,"child":[],"level":"6"},{"node_name":"0102","parent_id":136790,"node_id":136803,"child":[],"level":"6"}],"level":"5"},{"node_name":"2层","parent_id":136784,"node_id":136791,"child":[{"node_name":"0201","parent_id":136791,"node_id":136804,"child":[],"level":"6"},{"node_name":"0202","parent_id":136791,"node_id":136805,"child":[],"level":"6"}],"level":"5"}],"level":"4"},{"node_name":"2单元","parent_id":136781,"node_id":136785,"child":[{"node_name":"1层","parent_id":136785,"node_id":136792,"child":[{"node_name":"0101","parent_id":136792,"node_id":136806,"child":[],"level":"6"},{"node_name":"0102","parent_id":136792,"node_id":136807,"child":[],"level":"6"}],"level":"5"},{"node_name":"2层","parent_id":136785,"node_id":136793,"child":[{"node_name":"0201","parent_id":136793,"node_id":136808,"child":[],"level":"6"},{"node_name":"0202","parent_id":136793,"node_id":136809,"child":[],"level":"6"}],"level":"5"}],"level":"4"}],"level":"3"}],"level":"1"},"current_node_id":136779}
+
+## 效果图：
+
+只贴了2张图，支持最低1级联动，最大5级联动的动态联动效果：
+
+
+ ![3级联动图](https://github.com/66668/PickerDemo/blob/master/pictures/3_picker.jpeg)
+ 
+ ![5级联动图](https://github.com/66668/PickerDemo/blob/master/pictures/5_picker.jpeg)
