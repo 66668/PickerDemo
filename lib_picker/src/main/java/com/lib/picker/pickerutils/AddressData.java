@@ -1,16 +1,24 @@
-package com.sjy.picker.ui.pickerutils;
+package com.lib.picker.pickerutils;
 
 import android.support.annotation.NonNull;
 
+
+import com.lib.picker.bean.FifthBean;
+import com.lib.picker.bean.FirstBean;
+import com.lib.picker.bean.FourthBean;
+import com.lib.picker.bean.SecondBean;
+import com.lib.picker.bean.ThirdBean;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 地址选择器数据提供类（如果想添加省市区选择器等，创建该类型，不要放到AddressPicker中）
- * 根据参数，可以给选择器动态提供数据
- *
+ * TODO
+ * 地址选择器数据提供类（如果想添加省市区选择器等，创建该类型，不要放到AddressPicker中） 根据参数，可以给选择器动态提供数据
  */
-public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBean, FourthBean, FifthBean> {
+public class AddressData
+        implements Serializable, IAddressData<FirstBean, SecondBean, ThirdBean, FourthBean, FifthBean> {
     /**
      * 显示选择器的个数，构造时，尽量 数据+showNum+titles个数相同,代码没有处理个数有差异导致的问题
      */
@@ -18,7 +26,7 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
 
     public String[] lables;
 
-    private List<FirstBean> firstBeans;
+    public List<FirstBean> firstBeans;
 
     public AddressData(List<FirstBean> firistBeans, int showNum, String[] lables) {
         this.showNum = showNum;
@@ -26,10 +34,14 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
         this.firstBeans = firistBeans;
     }
 
-
     @NonNull
     @Override
     public List<FirstBean> initFirstData() {
+        return firstBeans;
+    }
+
+    @NonNull
+    public List<FirstBean> getFirstData() {
         return firstBeans;
     }
 
@@ -56,9 +68,10 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
         if (showNum < 4) {
             return new ArrayList<FourthBean>();
         } else {
+
             return firstBeans.get(firstPosition).getSeconds()
-                    .get(secondPosition).getThirds()
-                    .get(thirdPosition).getFours();
+                    .get(secondPosition).getThirds().
+                            get(thirdPosition).getFours();
         }
     }
 
@@ -68,10 +81,10 @@ public class AddressData implements IAddressData<FirstBean, SecondBean, ThirdBea
         if (showNum < 5) {
             return new ArrayList<FifthBean>();
         } else {
-            return firstBeans.get(firstPosition).getSeconds()
-                    .get(secondPosition).getThirds()
-                    .get(thirdPosition).getFours()
-                    .get(fourthPosition).getFifths();
+            return firstBeans.get(firstPosition).getSeconds().
+                    get(secondPosition).getThirds().
+                    get(thirdPosition).getFours().
+                    get(fourthPosition).getFifths();
         }
     }
 }

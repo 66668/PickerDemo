@@ -1,4 +1,4 @@
-package com.sjy.picker.ui.pickerutils;
+package com.lib.picker.pickerutils;
 
 import android.content.Context;
 import android.graphics.Typeface;

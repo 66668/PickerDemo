@@ -1,27 +1,29 @@
-package com.sjy.picker.ui;
+package com.lib.picker;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-import com.sjy.picker.R;
-import com.sjy.picker.ui.pickerutils.AddressData;
-import com.sjy.picker.ui.pickerutils.BaseWheelPicker;
-import com.sjy.picker.ui.pickerutils.FifthBean;
-import com.sjy.picker.ui.pickerutils.FourthBean;
-import com.sjy.picker.ui.pickerutils.LinkedFirstItem;
-import com.sjy.picker.ui.pickerutils.LinkedFourItem;
-import com.sjy.picker.ui.pickerutils.LinkedSecondItem;
-import com.sjy.picker.ui.pickerutils.LinkedThirdItem;
-import com.sjy.picker.ui.pickerutils.OnWheelLinkedListener;
-import com.sjy.picker.ui.pickerutils.SecondBean;
-import com.sjy.picker.ui.pickerutils.ThirdBean;
-import com.sjy.picker.ui.pickerutils.WheelView;
+import com.lib.picker.bean.FifthBean;
+import com.lib.picker.bean.FirstBean;
+import com.lib.picker.bean.FourthBean;
+import com.lib.picker.bean.SecondBean;
+import com.lib.picker.bean.ThirdBean;
+import com.lib.picker.pickerutils.AddressData;
+import com.lib.picker.pickerutils.BaseWheelPicker;
+import com.lib.picker.pickerutils.LinkedFirstItem;
+import com.lib.picker.pickerutils.LinkedFourItem;
+import com.lib.picker.pickerutils.LinkedSecondItem;
+import com.lib.picker.pickerutils.LinkedThirdItem;
+import com.lib.picker.pickerutils.OnWheelLinkedListener;
+import com.lib.picker.pickerutils.WheelView;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * **                 o8888888o                 **
  * **                 88" . "88                 **
  * **                 (| ^!^ |)                 **
- * **                 0\  =  /0                 **
+ * **                 0\  ¥  /0                 **
  * **               ___/'---'\___               **
  * **            .' \\\|     |// '.             **
  * **           / \\\|||  :  |||// \\           **
@@ -51,13 +53,14 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * **              佛祖保佑  镇类之宝             **
  * ***********************************************
  * <p>
- * 动态住址联动选择器：最多5个选择器，最少2个选择器（数据可由后台获取）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
+ * 动态住址联动选择器：最多5个选择器（数据由后台控制）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
  * <p>
  * 具体模式：
  * （1）最全5个-大门门禁：小区/楼号/单元/楼层/房间号
  * （2）小区门禁2-4个：小区/楼号/单元/楼层/房间号 或 楼号/单元/楼层/房间号（小区数据为空）或 单元可为空（eg:楼号/楼层/房间号）
  * （3）楼门禁2-3个：单元/楼层/房间号 或 楼层/房间号（单元可为空）
  * （4）单元门禁2个：楼层/房间号 （最低标准）
+ * (5) 层级门禁1个：房间号筛选 （2019-03-05新要求，可以挂到层节点）
  * <p>
  * 使用规则：
  * xml布局中添加AddressLinkedPicker的完整路径
@@ -146,11 +149,18 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      */
 
     public void setDefaultPosition(int selectFirstPosition, int selectSecondPosition, int selectThirdPosition, int selectFourthPosition, int selectFifthPosition) {
-        this.selectFifthPosition = selectFifthPosition;
+        this.selectFirstPosition = selectFirstPosition;
         this.selectSecondPosition = selectSecondPosition;
         this.selectThirdPosition = selectThirdPosition;
         this.selectFourthPosition = selectFourthPosition;
         this.selectFifthPosition = selectFifthPosition;
+
+        if (onWheelLinkedListener != null) {
+            onWheelLinkedListener.onWheelLinked(
+                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition),
+                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
+        }
+
     }
 
     public Fst getSelectFirstItem() {
@@ -189,11 +199,76 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
     }
 
     /**
+     * 获取结果
+     */
+    public String getRoomId(int first, int second, int third, int four, int five) {
+        FirstBean firstBean = provider.getFirstData().get(first);
+        if (provider.showNum == 1) {//2个选项
+            return "" + firstBean.getNodeId();
+        } else if (provider.showNum == 2) {
+            SecondBean secondBean = firstBean.getLists().get(second);
+            return "" + secondBean.getNodeId();
+        } else if (provider.showNum == 3) {
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            return "" + thirdBean.getNodeId();
+        } else if (provider.showNum == 4) {
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            FourthBean fourthBean = thirdBean.getLists().get(four);
+            return "" + fourthBean.getNodeId();
+        } else if (provider.showNum == 5) {
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            FourthBean fourthBean = thirdBean.getLists().get(four);
+            FifthBean fifthBean = fourthBean.getLists().get(five);
+            return "" + fifthBean.getNodeId();
+        }
+        return "";
+    }
+
+    /**
+     * 获取结果
+     */
+    public String getRoomName(int first, int second, int third, int four, int five) {
+        FirstBean firstBean = provider.getFirstData().get(first);
+
+        if (provider.showNum == 1) {//
+            return firstBean.getName() + "房间";
+        } else if (provider.showNum == 2) {//单元下
+            SecondBean secondBean = firstBean.getLists().get(second);
+            return firstBean.getName() + "层" + secondBean.getName() + "房间";
+        } else if (provider.showNum == 3) {//楼
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            return secondBean.getName() + "层" + thirdBean.getName() + "房间";
+        } else if (provider.showNum == 4) {//分区下
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            FourthBean fourthBean = thirdBean.getLists().get(four);
+
+            return secondBean.getName() + "单元" + thirdBean.getName() + "层" + fourthBean.getName() + "房间";
+        } else if (provider.showNum == 5) {//小区下
+            SecondBean secondBean = firstBean.getLists().get(second);
+            ThirdBean thirdBean = secondBean.getLists().get(third);
+            FourthBean fourthBean = thirdBean.getLists().get(four);
+            FifthBean fifthBean = fourthBean.getLists().get(five);
+            return secondBean.getName() + "楼" + thirdBean.getName() + "单元" + fourthBean.getName() + "层" + fifthBean.getName() + "房间";
+        }
+        return "";
+    }
+
+    /**
      * 将数据绑定到view中
      * 代码创建布局
      *
      * @return
      */
+    private WheelView secondView = null;
+    private WheelView thirdView = null;
+    private WheelView fourthView = null;
+    private WheelView fifthView = null;
+
     private void buildPicker() {
 
         //--------------------------------------------------------------------
@@ -211,19 +286,23 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         firstView.setItems(provider.initFirstData(), selectFirstPosition);
 
         //02创建
-        final WheelView secondView = createWheelView();
-        secondView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
-        addView(secondView);
-        //02标签
-        TextView labelView2 = createLabelView();
-        labelView2.setText(provider.lables[1]);
-        addView(labelView2);
-        //02绑定数据
-        secondView.setItems(provider.initSecondData(selectFirstPosition), selectSecondPosition);
+        if (provider.showNum >= 2) {
+            secondView = null;
+            secondView = createWheelView();
+            secondView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
+            addView(secondView);
+            //02标签
+            TextView labelView2 = createLabelView();
+            labelView2.setText(provider.lables[1]);
+            addView(labelView2);
+            //02绑定数据
+            secondView.setItems(provider.initSecondData(selectFirstPosition), selectSecondPosition);
+        }
 
         //03创建
-        final WheelView thirdView = createWheelView();
         if (provider.showNum >= 3) {
+            thirdView = null;
+            thirdView = createWheelView();
             thirdView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(thirdView);
             //03标签
@@ -232,11 +311,12 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             addView(labelView3);
             //03绑定数据
             thirdView.setItems(provider.initThirdData(selectFirstPosition, selectSecondPosition), selectThirdPosition);
-
         }
+
         //04创建
-        final WheelView fourthView = createWheelView();
         if (provider.showNum >= 4) {
+            fourthView = null;
+            fourthView = createWheelView();
             fourthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fourthView);
             //04标签
@@ -248,8 +328,9 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
         }
         //05创建
-        final WheelView fifthView = createWheelView();
         if (provider.showNum == 5) {
+            fifthView = null;
+            fifthView = createWheelView();
             fifthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fifthView);
             //05标签
@@ -261,7 +342,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         }
 
         //--------------------------------------------------------------------
-        //-----------------------------添加监听---------------------------------------
+        //-----------------------------添加监听,最低2个选项---------------------------------------
         //--------------------------------------------------------------------
 
         //01监听
@@ -271,49 +352,66 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                 selectFirstItem = (Fst) provider.initFirstData().get(index);
                 //索引position
                 selectFirstPosition = index;
-                selectSecondPosition = 0;//重置第二级索引
-                if (provider.showNum == 3) {
+                if (provider.showNum == 2) {
+                    selectSecondPosition = 0;//重置第二级索引
+                } else if (provider.showNum == 3) {
+                    selectSecondPosition = 0;//重置第二级索引
                     selectThirdPosition = 0;//重置第三级索引
                 } else if (provider.showNum == 4) {
+                    selectSecondPosition = 0;//重置第二级索引
                     selectThirdPosition = 0;//重置第三级索引
                     selectFourthPosition = 0;//重置第4级索引
-                } else {
+                } else if (provider.showNum == 5) {
+                    selectSecondPosition = 0;//重置第二级索引
                     selectThirdPosition = 0;//重置第三级索引
                     selectFourthPosition = 0;//重置第4级索引
                     selectFifthPosition = 0;//重置第5级索引
                 }
                 //根据第一级数据获取第二级数据
-                List<SecondBean> secondBeans = provider.initSecondData(selectFirstPosition);
-                selectSecondItem = (Snd) secondBeans.get(selectSecondPosition);
-                secondView.setItems(secondBeans, selectSecondPosition);
-
+                if (provider.showNum == 2) {
+                    List<SecondBean> secondBeans = provider.initSecondData(selectFirstPosition);
+                    selectSecondItem = (Snd) secondBeans.get(selectSecondPosition);
+                    secondView.setItems(secondBeans, selectSecondPosition);
+                }
                 //根据第2级数据获取第3级数据
                 if (provider.showNum == 3) {
+                    List<SecondBean> secondBeans = provider.initSecondData(selectFirstPosition);
+                    selectSecondItem = (Snd) secondBeans.get(selectSecondPosition);
+                    secondView.setItems(secondBeans, selectSecondPosition);
+                    //
                     List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
                     selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                 }
                 //根据第3级数据获取第4级数据
                 if (provider.showNum == 4) {
+                    //
+                    List<SecondBean> secondBeans = provider.initSecondData(selectFirstPosition);
+                    selectSecondItem = (Snd) secondBeans.get(selectSecondPosition);
+                    secondView.setItems(secondBeans, selectSecondPosition);
                     //根据第2级数据获取第3级数据
                     List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
                     selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                 }
 
                 //根据第4级数据获取第5级数据
                 if (provider.showNum == 5) {
+                    //
+                    List<SecondBean> secondBeans = provider.initSecondData(selectFirstPosition);
+                    selectSecondItem = (Snd) secondBeans.get(selectSecondPosition);
+                    secondView.setItems(secondBeans, selectSecondPosition);
                     //根据第2级数据获取第3级数据
                     List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
                     selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
                     thirdView.setItems(thirdBeans, selectThirdPosition);
                     //根据第3级数据获取第4级数据
                     List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
+                    selectFourthItem = (Fur) fourthBeans.get(selectThirdPosition);
                     fourthView.setItems(fourthBeans, selectFourthPosition);
                     //根据第4级数据获取第5级数据
                     List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
@@ -323,72 +421,110 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
                 //回调监听
                 if (onWheelLinkedListener != null) {
-                    onWheelLinkedListener.onWheelLinked(selectFirstPosition, 0, 0, 0, 0);
+                    if (provider.showNum == 1) {
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, -1, -1, -1, -1),
+                                getRoomName(selectFirstPosition, -1, -1, -1, -1));
+                    } else if (provider.showNum == 2) {
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, 0, -1, -1, -1),
+                                getRoomName(selectFirstPosition, 0, -1, -1, -1));
+                    } else if (provider.showNum == 3) {
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, 0, 0, -1, -1),
+                                getRoomName(selectFirstPosition, 0, 0, -1, -1));
+                    } else if (provider.showNum == 4) {
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, 0, 0, 0, -1),
+                                getRoomName(selectFirstPosition, 0, 0, 0, -1));
+                    } else if (provider.showNum == 5) {
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, 0, 0, 0, 0),
+                                getRoomName(selectFirstPosition, 0, 0, 0, 0));
+                    }
                 }
             }
 
         });
 
         //02监听
-        secondView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
-            @Override
-            public void onSelected(int index) {
-                //
-                selectSecondItem = (Snd) provider.initSecondData(selectFirstPosition).get(index);
-                selectSecondPosition = index;
-                //索引
-                if (provider.showNum == 3) {
-                    selectThirdPosition = 0;//重置第三级索引
-                } else if (provider.showNum == 4) {
-                    selectThirdPosition = 0;//重置第三级索引
-                    selectFourthPosition = 0;//重置第4级索引
-                } else {
-                    selectThirdPosition = 0;//重置第三级索引
-                    selectFourthPosition = 0;//重置第4级索引
-                    selectFifthPosition = 0;//重置第5级索引
-                }
+        if (provider.showNum >= 2) {
+            secondView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+                @Override
+                public void onSelected(int index) {
+                    //
+                    selectSecondItem = (Snd) provider.initSecondData(selectFirstPosition).get(index);
+                    selectSecondPosition = index;
+                    //索引
+                    if (provider.showNum == 3) {
+                        selectThirdPosition = 0;//重置第三级索引
+                    } else if (provider.showNum == 4) {
+                        selectThirdPosition = 0;//重置第三级索引
+                        selectFourthPosition = 0;//重置第4级索引
+                    } else {
+                        selectThirdPosition = 0;//重置第三级索引
+                        selectFourthPosition = 0;//重置第4级索引
+                        selectFifthPosition = 0;//重置第5级索引
+                    }
 
-                //根据第2级数据获取第3级数据
-                if (provider.showNum == 3) {
-                    List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
-                    selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
-                    thirdView.setItems(thirdBeans, selectThirdPosition);
-                }
-                //根据第3级数据获取第4级数据
-                if (provider.showNum == 4) {
                     //根据第2级数据获取第3级数据
-                    List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
-                    selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
-                    thirdView.setItems(thirdBeans, selectThirdPosition);
+                    if (provider.showNum == 3) {
+                        List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
+                        selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
+                        thirdView.setItems(thirdBeans, selectThirdPosition);
+                    }
                     //根据第3级数据获取第4级数据
-                    List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
-                    fourthView.setItems(fourthBeans, selectFourthPosition);
-                }
+                    if (provider.showNum == 4) {
+                        //根据第2级数据获取第3级数据
+                        List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
+                        selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
+                        thirdView.setItems(thirdBeans, selectThirdPosition);
+                        //根据第3级数据获取第4级数据
+                        List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
+                        selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
+                        fourthView.setItems(fourthBeans, selectFourthPosition);
+                    }
 
-                //根据第4级数据获取第5级数据
-                if (provider.showNum == 5) {
-                    //根据第2级数据获取第3级数据
-                    List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
-                    selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
-                    thirdView.setItems(thirdBeans, selectThirdPosition);
-                    //根据第3级数据获取第4级数据
-                    List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
-                    selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
-                    fourthView.setItems(fourthBeans, selectFourthPosition);
                     //根据第4级数据获取第5级数据
-                    List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
-                    selectFifthItem = (Fiv) fifthBeans.get(selectFifthPosition);
-                    fifthView.setItems(fifthBeans, selectFifthPosition);
+                    if (provider.showNum == 5) {
+                        //根据第2级数据获取第3级数据
+                        List<ThirdBean> thirdBeans = provider.initThirdData(selectFirstPosition, selectSecondPosition);
+                        selectThirdtem = (Trd) thirdBeans.get(selectThirdPosition);
+                        thirdView.setItems(thirdBeans, selectThirdPosition);
+                        //根据第3级数据获取第4级数据
+                        List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
+                        selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
+                        fourthView.setItems(fourthBeans, selectFourthPosition);
+                        //根据第4级数据获取第5级数据
+                        List<FifthBean> fifthBeans = provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition);
+                        selectFifthItem = (Fiv) fifthBeans.get(selectFifthPosition);
+                        fifthView.setItems(fifthBeans, selectFifthPosition);
+                    }
+
+                    //回调监听
+                    if (onWheelLinkedListener != null) {
+                        if (provider.showNum == 2) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, -1, -1, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, -1, -1, -1));
+                        } else if (provider.showNum == 3) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, 0, -1, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, -1, -1));
+                        } else if (provider.showNum == 4) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, 0, 0, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, 0, -1));
+                        } else if (provider.showNum == 5) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, 0, 0, 0),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, 0, 0));
+                        }
+                    }
                 }
 
-                //回调监听
-                if (onWheelLinkedListener != null) {
-                    onWheelLinkedListener.onWheelLinked(selectFirstPosition, selectSecondPosition, 0, 0, 0);
-                }
-            }
-
-        });
+            });
+        }
 
         //03监听
         if (provider.showNum >= 3) {
@@ -396,10 +532,8 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                 @Override
                 public void onSelected(int index) {
                     //
-                    if (provider.showNum >= 3) {
-                        selectThirdtem = (Trd) provider.initThirdData(selectFirstPosition, selectSecondPosition).get(index);
-                        selectThirdPosition = index;
-                    }
+                    selectThirdtem = (Trd) provider.initThirdData(selectFirstPosition, selectSecondPosition).get(index);
+                    selectThirdPosition = index;
                     //索引
                     if (provider.showNum == 4) {
                         selectFourthPosition = 0;//重置第4级索引
@@ -419,6 +553,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     if (provider.showNum == 5) {
                         //根据第3级数据获取第4级数据
                         List<FourthBean> fourthBeans = provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition);
+                        Log.d("SJY", "fourthBeans=" + fourthBeans.size() + "--selectThirdPosition=" + selectThirdPosition);
                         selectFourthItem = (Fur) fourthBeans.get(selectFourthPosition);
                         fourthView.setItems(fourthBeans, selectFourthPosition);
                         //根据第4级数据获取第5级数据
@@ -428,7 +563,19 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     }
                     //回调监听
                     if (onWheelLinkedListener != null) {
-                        onWheelLinkedListener.onWheelLinked(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0);
+                        if (provider.showNum == 3) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, -1, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, -1, -1));
+                        } else if (provider.showNum == 4) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, -1));
+                        } else if (provider.showNum == 5) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0));
+                        }
                     }
 
                 }
@@ -441,10 +588,9 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                 @Override
                 public void onSelected(int index) {
                     //
-                    if (provider.showNum >= 4) {
-                        selectFourthItem = (Fur) provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition).get(selectFourthPosition);
-                        selectFourthPosition = index;
-                    }
+                    selectFourthItem = (Fur) provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition).get(selectFourthPosition);
+                    selectFourthPosition = index;
+                    //索引
                     if (provider.showNum == 5) {
                         selectFifthPosition = 0;//重置第5级索引
                     }
@@ -457,7 +603,15 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     }
                     //回调监听
                     if (onWheelLinkedListener != null) {
-                        onWheelLinkedListener.onWheelLinked(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0);
+                        if (provider.showNum == 4) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, -1),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, -1));
+                        } else if (provider.showNum == 5) {
+                            onWheelLinkedListener.onWheelLinked(
+                                    getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0),
+                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0));
+                        }
                     }
                 }
             });
@@ -469,15 +623,16 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                 @Override
                 public void onSelected(int index) {
                     //
-                    if (provider.showNum == 5) {
-                        selectFifthItem = (Fiv) provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition).get(index);
-                        selectFifthPosition = index;
-                    }
+                    selectFifthItem = (Fiv) provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition).get(index);
+                    selectFifthPosition = index;
+
                     //无重置的索引了
                     //无关联的下一级了
                     //回调监听
                     if (onWheelLinkedListener != null) {
-                        onWheelLinkedListener.onWheelLinked(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition);
+                        onWheelLinkedListener.onWheelLinked(
+                                getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition),
+                                getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
                     }
                 }
             });
@@ -498,7 +653,6 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             return;
         }
         setWidth();
-
         buildPicker();
     }
 
@@ -512,7 +666,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
     }
 
     private void setWidth() {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getLayoutParams();
+        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) getLayoutParams();
         int width = 280;
         //根据provider的showNum，设置宽高
         if (provider.showNum == 2) {

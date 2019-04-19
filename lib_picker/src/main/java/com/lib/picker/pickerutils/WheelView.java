@@ -1,4 +1,4 @@
-package com.sjy.picker.ui.pickerutils;
+package com.lib.picker.pickerutils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -68,7 +68,7 @@ public class WheelView extends View {
     private Paint paintCenterText;//选中项画笔
     private Paint paintIndicator;//分割线画笔
     private Paint paintShadow;//阴影画笔
-    private List<WheelItem> items = new ArrayList<>();//所有选项
+    private List<WheelItem> items = new ArrayList<WheelItem>();//所有选项
     private String label;//附加单位
     private int maxTextWidth;//最大的文字宽
     private int maxTextHeight;//最大的文字高
@@ -440,7 +440,6 @@ public class WheelView extends View {
         Rect rect = new Rect();
         for (int i = 0; i < items.size(); i++) {
             String s1 = obtainContentText(items.get(i));
-            Log.d("SJY", " s1=" + s1 + "--items.get(i)==null=" + (items.get(i) == null));
             paintCenterText.getTextBounds(s1, 0, s1.length(), rect);
             int textWidth = rect.width();
             if (textWidth > maxTextWidth) {
@@ -502,7 +501,7 @@ public class WheelView extends View {
                     onWheelListener.onSelected(true, selectedIndex, items.get(selectedIndex).getName());
                 }
             }
-        }, 200L);
+        }, 150);
     }
 
     @Override
@@ -708,7 +707,7 @@ public class WheelView extends View {
             return ((WheelItem) item).getName();
         } else if (item instanceof Integer) {
             //如果为整形则最少保留两位数.
-            return String.format(Locale.getDefault(), "%02d", (int) item);
+            return String.format(Locale.getDefault(), "%02d", (Integer) item);
         }
         return item.toString();
     }
@@ -737,7 +736,7 @@ public class WheelView extends View {
                 drawOutContentStart = (int) ((measuredWidth - rect.width()) * 0.5);
                 break;
             case Gravity.LEFT:
-                drawOutContentStart =toPx(getContext(), 8);
+                drawOutContentStart = toPx(getContext(), 8);
                 break;
             case Gravity.RIGHT:
                 drawOutContentStart = measuredWidth - rect.width() - (int) centerContentOffset;
@@ -1136,7 +1135,7 @@ public class WheelView extends View {
     /**
      * dp转换为px
      */
-    private  int toPx(Context context, float dpValue) {
+    private int toPx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         int pxValue = (int) (dpValue * scale + 0.5f);
         return pxValue;
@@ -1145,7 +1144,7 @@ public class WheelView extends View {
     /**
      * px转换为dp
      */
-    private  int toDp(Context context, float pxValue) {
+    private int toDp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         int dpValue = (int) (pxValue / scale + 0.5f);
         return dpValue;

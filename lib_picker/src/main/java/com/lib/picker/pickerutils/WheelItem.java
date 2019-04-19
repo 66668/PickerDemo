@@ -1,4 +1,4 @@
-package com.sjy.picker.ui.pickerutils;
+package com.lib.picker.pickerutils;
 
 /**
  * 用于滑轮选择器展示的条目
