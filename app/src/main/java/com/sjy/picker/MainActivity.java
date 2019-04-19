@@ -13,13 +13,12 @@ import com.lib.picker.AddressLinkedPicker;
 import com.lib.picker.pickerutils.AddressData;
 import com.lib.picker.pickerutils.OnWheelLinkedListener;
 import com.lib.picker.pickerutils.WheelView;
-import com.sjy.picker.utils.DataUtils;
 import com.sjy.picker.utils.JsonUtils;
 import com.sjy.picker.utils.Logg;
 
-
-import java.util.logging.Logger;
-
+/**
+ * 请切换三种测试，切换数据的curInt值看不同的筛选器效果
+ */
 public class MainActivity extends AppCompatActivity {
 
     private AddressLinkedPicker picker;
