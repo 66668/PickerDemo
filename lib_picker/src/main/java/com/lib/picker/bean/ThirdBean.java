@@ -1,7 +1,7 @@
 package com.lib.picker.bean;
 
 
-import com.lib.picker.pickerutils.LinkedThirdItem;
+import com.lib.picker.bean.base.LinkedThirdItem;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,6 +1,11 @@
-package com.lib.picker.pickerutils;
+package com.lib.picker.bean.base;
 
 import android.support.annotation.NonNull;
+
+import com.lib.picker.bean.base.LinkedFirstItem;
+import com.lib.picker.bean.base.LinkedFourItem;
+import com.lib.picker.bean.base.LinkedSecondItem;
+import com.lib.picker.bean.base.LinkedThirdItem;
 
 import java.util.List;
 

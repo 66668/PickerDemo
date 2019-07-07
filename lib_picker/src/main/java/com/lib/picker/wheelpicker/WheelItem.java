@@ -1,4 +1,4 @@
-package com.lib.picker.pickerutils;
+package com.lib.picker.wheelpicker;
 
 /**
  * 用于滑轮选择器展示的条目

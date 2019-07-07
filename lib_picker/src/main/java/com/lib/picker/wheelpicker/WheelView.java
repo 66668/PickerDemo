@@ -1,4 +1,4 @@
-package com.lib.picker.pickerutils;
+package com.lib.picker.wheelpicker;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

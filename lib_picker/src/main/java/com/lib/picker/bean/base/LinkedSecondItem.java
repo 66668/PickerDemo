@@ -1,4 +1,4 @@
-package com.lib.picker.pickerutils;
+package com.lib.picker.bean.base;
 
 
 import java.util.List;

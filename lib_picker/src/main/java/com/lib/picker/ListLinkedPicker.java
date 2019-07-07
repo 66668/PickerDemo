@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
 
 import com.lib.picker.bean.FifthBean;
 import com.lib.picker.bean.FirstBean;
@@ -17,20 +15,20 @@ import com.lib.picker.bean.FourthBean;
 import com.lib.picker.bean.SecondBean;
 import com.lib.picker.bean.ThirdBean;
 import com.lib.picker.bean.AddressData;
-import com.lib.picker.wheelpicker.BaseWheelPicker;
 import com.lib.picker.bean.base.LinkedFirstItem;
 import com.lib.picker.bean.base.LinkedFourItem;
 import com.lib.picker.bean.base.LinkedSecondItem;
 import com.lib.picker.bean.base.LinkedThirdItem;
-import com.lib.picker.wheelpicker.OnWheelLinkedListener;
-import com.lib.picker.wheelpicker.WheelView;
+import com.lib.picker.listpicker.FirstPickerView;
+import com.lib.picker.listpicker.PickerView;
+import com.lib.picker.listpicker.OnPickerLinkedListener;
 
 import java.util.List;
 
 import static android.view.Gravity.CENTER_VERTICAL;
 
 /**
- * 样式1：中间滑轮选择效果
+ * 样式2：多级联动效果
  * ***********************************************
  * **                  _oo0oo_                  **
  * **                 o8888888o                 **
@@ -54,7 +52,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * **              佛祖保佑  镇类之宝             **
  * ***********************************************
  * <p>
- * 动态住址联动选择器：最多5个选择器（数据由后台控制）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
+ * 多级联动选择器  布局构建类：最多5个选择器（数据由后台控制）,5级联动选择器。默认只初始化第一级数据，第2 3 4 5级数据由联动获得。
  * <p>
  * 具体模式：
  * （1）最全5个-大门门禁：小区/楼号/单元/楼层/房间号
@@ -67,13 +65,13 @@ import static android.view.Gravity.CENTER_VERTICAL;
  * xml布局中添加AddressLinkedPicker的完整路径
  * 代码中
  */
-public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数据
+public class ListLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数据
         , Snd extends LinkedSecondItem<Trd>//第二条数据
         , Trd extends LinkedThirdItem<Fur>//第三条数据
         , Fur extends LinkedFourItem<Fiv>//第四条数据
         , Fiv>//第五条数据
-        extends BaseWheelPicker {
-
+        extends LinearLayout {
+    private Context context;
     //================================变量--数据源变量========================================
     private AddressData provider = null;//数据源
     private Fst selectFirstItem;
@@ -87,44 +85,71 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
     //================================回调监听========================================
 
-    OnWheelLinkedListener onWheelLinkedListener;
+    OnPickerLinkedListener onWheelLinkedListener;
 
     /**
      * 设置滑动过程数据联动监听
      *
      * @param onWheelLinkedListener
      */
-    public void setOnWheelLinkedListener(OnWheelLinkedListener onWheelLinkedListener) {
+    public void setOnPickerLinkedListener(OnPickerLinkedListener onWheelLinkedListener) {
         this.onWheelLinkedListener = onWheelLinkedListener;
     }
     //================================构造========================================
 
 
-    public AddressLinkedPicker(Context context) {
+    public ListLinkedPicker(Context context) {
         super(context);
+        this.context = context;
+        buildView();
     }
 
-    public AddressLinkedPicker(Context context, @Nullable AttributeSet attrs) {
+    public ListLinkedPicker(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
+        buildView();
     }
 
-    public AddressLinkedPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ListLinkedPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
+        buildView();
     }
 
-    public AddressLinkedPicker(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ListLinkedPicker(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        this.context = context;
+        buildView();
     }
 
     /**
      * 构造，传递数据，并处理数据
      *
-     * @param activity
+     * @param context
      */
-    public AddressLinkedPicker(Activity activity, AddressData provider) {
-        super(activity);
+    public ListLinkedPicker(Activity context, AddressData provider) {
+        super(context);
+        this.context = context;
         this.provider = provider;
+        buildView();
     }
+
+    /**
+     * 布局构建/支持update
+     */
+    public void buildView() {
+        removeAllViews();
+        setOrientation(HORIZONTAL);
+        setGravity(CENTER_VERTICAL);
+        if (provider == null) {
+            //只构建加载动画
+            buildProgress();
+            return;
+        }
+        setWidth();
+        buildPicker();
+    }
+
 
     /**
      * 最好这样写
@@ -204,7 +229,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      */
     public String getRoomId(int first, int second, int third, int four, int five) {
         FirstBean firstBean = provider.getFirstData().get(first);
-        if (provider.showNum == 1) {//2个选项
+        if (provider.showNum == 1) {
             return "" + firstBean.getNodeId();
         } else if (provider.showNum == 2) {
             SecondBean secondBean = firstBean.getLists().get(second);
@@ -265,37 +290,34 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      *
      * @return
      */
-    private WheelView secondView = null;
-    private WheelView thirdView = null;
-    private WheelView fourthView = null;
-    private WheelView fifthView = null;
+    private PickerView secondView = null;
+    private PickerView thirdView = null;
+    private PickerView fourthView = null;
+    private PickerView fifthView = null;
 
+    /**
+     * 最终构建
+     */
     private void buildPicker() {
 
         //--------------------------------------------------------------------
         //-----------------------------根据showNum,动态添加选择器个数---------------------------------------
         //--------------------------------------------------------------------
         //01创建
-        WheelView firstView = createWheelView();
-        firstView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
+        FirstPickerView firstView = new FirstPickerView(context);
+        firstView.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, firstColumnWeight));
         addView(firstView);
-        //01标签
-        TextView labelView1 = createLabelView();
-        labelView1.setText(provider.lables[0]);
-        addView(labelView1);
+
         //01绑定数据
-        firstView.setItems(provider.initFirstData(), selectFirstPosition);
+        firstView.setFirstList(provider.initFirstData(), selectFirstPosition);
 
         //02创建
         if (provider.showNum >= 2) {
             secondView = null;
-            secondView = createWheelView();
-            secondView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
+            secondView = new PickerView(context);
+            secondView.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(secondView);
-            //02标签
-            TextView labelView2 = createLabelView();
-            labelView2.setText(provider.lables[1]);
-            addView(labelView2);
+
             //02绑定数据
             secondView.setItems(provider.initSecondData(selectFirstPosition), selectSecondPosition);
         }
@@ -303,13 +325,10 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         //03创建
         if (provider.showNum >= 3) {
             thirdView = null;
-            thirdView = createWheelView();
-            thirdView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
-            addView(thirdView);
-            //03标签
-            TextView labelView3 = createLabelView();
-            labelView3.setText(provider.lables[2]);
-            addView(labelView3);
+            thirdView = new PickerView(context);
+            thirdView.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, firstColumnWeight));
+            addView(thirdView);//03标签
+
             //03绑定数据
             thirdView.setItems(provider.initThirdData(selectFirstPosition, selectSecondPosition), selectThirdPosition);
         }
@@ -317,13 +336,10 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         //04创建
         if (provider.showNum >= 4) {
             fourthView = null;
-            fourthView = createWheelView();
-            fourthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
+            fourthView = new PickerView(context);
+            fourthView.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fourthView);
-            //04标签
-            TextView labelView4 = createLabelView();
-            labelView4.setText(provider.lables[3]);
-            addView(labelView4);
+
             //04绑定数据
             fourthView.setItems(provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition), selectFourthPosition);
 
@@ -331,23 +347,20 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         //05创建
         if (provider.showNum == 5) {
             fifthView = null;
-            fifthView = createWheelView();
-            fifthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
+            fifthView = new PickerView(context);
+            fifthView.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fifthView);
-            //05标签
-            TextView labelView5 = createLabelView();
-            labelView5.setText(provider.lables[4]);
-            addView(labelView5);
+
             //05绑定数据
             fifthView.setItems(provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition), selectFifthPosition);
         }
 
         //--------------------------------------------------------------------
-        //-----------------------------添加监听,最低2个选项---------------------------------------
+        //-----------------------------添加监听---------------------------------------
         //--------------------------------------------------------------------
 
         //01监听
-        firstView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+        firstView.setOnItemSelectListener(new FirstPickerView.OnItemSelectListener() {
             @Override
             public void onSelected(int index) {
                 selectFirstItem = (Fst) provider.initFirstData().get(index);
@@ -450,7 +463,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
         //02监听
         if (provider.showNum >= 2) {
-            secondView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+            secondView.setOnItemSelectListener(new PickerView.OnItemSelectListener() {
                 @Override
                 public void onSelected(int index) {
                     //
@@ -529,7 +542,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
         //03监听
         if (provider.showNum >= 3) {
-            thirdView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+            thirdView.setOnItemSelectListener(new PickerView.OnItemSelectListener() {
                 @Override
                 public void onSelected(int index) {
                     //
@@ -585,7 +598,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
         //04监听
         if (provider.showNum >= 4) {
-            fourthView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+            fourthView.setOnItemSelectListener(new PickerView.OnItemSelectListener() {
                 @Override
                 public void onSelected(int index) {
                     //
@@ -620,7 +633,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
         //05监听
         if (provider.showNum == 5) {
-            fifthView.setOnItemSelectListener(new WheelView.OnItemSelectListener() {
+            fifthView.setOnItemSelectListener(new PickerView.OnItemSelectListener() {
                 @Override
                 public void onSelected(int index) {
                     //
@@ -640,22 +653,6 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         }
     }
 
-    /**
-     * 布局中先构建布局
-     */
-    @Override
-    public void buildView() {
-        removeAllViews();
-        setOrientation(HORIZONTAL);
-        setGravity(CENTER_VERTICAL);
-        if (provider == null) {
-            //只构建加载动画
-            buildProgress();
-            return;
-        }
-        setWidth();
-        buildPicker();
-    }
 
     /**
      * 没有加载出数据，使用加载动画表示

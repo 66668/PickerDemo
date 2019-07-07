@@ -10,7 +10,7 @@ import com.lib.picker.bean.FirstBean;
 import com.lib.picker.bean.FourthBean;
 import com.lib.picker.bean.SecondBean;
 import com.lib.picker.bean.ThirdBean;
-import com.lib.picker.pickerutils.AddressData;
+import com.lib.picker.bean.AddressData;
 
 
 import java.util.ArrayList;

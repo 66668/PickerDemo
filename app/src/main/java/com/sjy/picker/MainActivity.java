@@ -10,9 +10,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lib.picker.AddressLinkedPicker;
-import com.lib.picker.pickerutils.AddressData;
-import com.lib.picker.pickerutils.OnWheelLinkedListener;
-import com.lib.picker.pickerutils.WheelView;
+import com.lib.picker.bean.AddressData;
+import com.lib.picker.wheelpicker.OnWheelLinkedListener;
+import com.lib.picker.wheelpicker.WheelView;
 import com.sjy.picker.utils.JsonUtils;
 import com.sjy.picker.utils.Logg;
 

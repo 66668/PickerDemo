@@ -1,5 +1,7 @@
-package com.lib.picker.pickerutils;
+package com.lib.picker.bean.base;
 
+
+import com.lib.picker.wheelpicker.WheelItem;
 
 /**
  * 用于联动选择器展示的条目
