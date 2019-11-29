@@ -12,7 +12,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.lib.picker.AddressLinkedPicker;
 import com.lib.picker.bean.AddressData;
 import com.lib.picker.wheelpicker.OnWheelLinkedListener;
+import com.lib.picker.wheelpicker.OnWheelScrollListener;
 import com.lib.picker.wheelpicker.WheelView;
+import com.sjy.picker.utils.DataUtils;
 import com.sjy.picker.utils.JsonUtils;
 import com.sjy.picker.utils.Logg;
 
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "点我干嘛，不够看的嘛", Toast.LENGTH_SHORT).show();
+                //回归位置
+                picker.resetChoose();
             }
         });
     }
@@ -95,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
                 protected AddressData doInBackground(Void... voids) {
 
                     //测试1：自定义生成
-//                    return  DataUtils.getData();
+                    return DataUtils.getData();
 
-//                    测试2：后台数据 obj1
-                    return (AddressData) JsonUtils.loadRoomData(obj1, curInt1);
+//                    测试2：后台数据 obj1：长期迭代，json格式已经改变，不可用
+//                    return (AddressData) JsonUtils.loadRoomData(obj1, curInt1);
 
-                    //测试3：后台数据 obj2
+                    //测试3：后台数据 obj2：长期迭代，json格式已经改变，不可用
 //                    return JsonUtils.loadRoomData(obj2, curInt2);
                 }
 
@@ -131,6 +135,14 @@ public class MainActivity extends AppCompatActivity {
         picker.setDefaultPosition(0, 0, 0, 0, 0);
         picker.setShadowColor(0xFF88CCAA);
         picker.setDividerRatio(WheelView.DividerConfig.FILL);
+        //滑动中，禁止呼叫操作
+        picker.addWheelScrollingListener(new OnWheelScrollListener() {
+            @Override
+            public void onWheelScrolling() {
+                //滑动选择时禁止呼叫
+            }
+        });
+        //筛选监听
         picker.setOnWheelLinkedListener(new OnWheelLinkedListener() {
             @Override
             public void onWheelLinked(String nodeID, String room) {

@@ -82,6 +82,7 @@ public class WheelView extends View {
     private float lineSpaceMultiplier = LINE_SPACE_MULTIPLIER;//条目间距倍数，可用来设置上下间距
     private int textPadding = TEXT_PADDING;//文字的左右边距,单位为px
     private boolean isLoop = true;//循环滚动
+    private boolean isScrolling = false;//循环滚动
     private float firstLineY;//第一条线Y坐标值
     private float secondLineY;//第二条线Y坐标
     private float totalScrollY = 0;//滚动总高度y值
@@ -143,6 +144,14 @@ public class WheelView extends View {
      */
     public final void setCycleDisable(boolean cycleDisable) {
         isLoop = !cycleDisable;
+    }
+
+
+    /**
+     * 回归滚动位置
+     */
+    public final void resetChoose() {
+        scrollBy(3000);
     }
 
     /**
@@ -455,6 +464,16 @@ public class WheelView extends View {
      * 平滑滚动的实现
      */
     private void smoothScroll(int actionType) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                //睿家使用的该处监听
+                if (onItemSelectListener != null) {
+                    onItemSelectListener.onScrolling();
+                }
+
+            }
+        });
         cancelFuture();
         if (actionType == ACTION_FLING || actionType == ACTION_DRAG) {
             offset = (int) ((totalScrollY % itemHeight + itemHeight) % itemHeight);
@@ -474,6 +493,7 @@ public class WheelView extends View {
      * 滚动惯性的实现
      */
     private void scrollBy(float velocityY) {
+        Log.d("SJY", "velocityY=" + velocityY);
         cancelFuture();
         InertiaTimerTask command = new InertiaTimerTask(this, velocityY);
         mFuture = Executors.newSingleThreadScheduledExecutor()
@@ -491,7 +511,7 @@ public class WheelView extends View {
         if (onItemSelectListener == null && onWheelListener == null) {
             return;
         }
-        postDelayed(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 if (onItemSelectListener != null) {
@@ -501,7 +521,7 @@ public class WheelView extends View {
                     onWheelListener.onSelected(true, selectedIndex, items.get(selectedIndex).getName());
                 }
             }
-        }, 150);
+        });
     }
 
     @Override
@@ -758,6 +778,7 @@ public class WheelView extends View {
         switch (event.getAction()) {
             //按下
             case MotionEvent.ACTION_DOWN:
+                isScrolling = false;
                 startTime = System.currentTimeMillis();
                 cancelFuture();
                 previousY = event.getRawY();
@@ -785,11 +806,26 @@ public class WheelView extends View {
                         totalScrollY = (int) bottom;
                     }
                 }
+                //保证只执行一次
+                if (!isScrolling) {
+                    isScrolling = true;
+                    post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //睿家使用的该处监听
+                            if (onItemSelectListener != null) {
+                                onItemSelectListener.onScrolling();
+                            }
+
+                        }
+                    });
+                }
                 break;
             //完成滑动，手指离开屏幕
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
             default:
+                isScrolling = false;
                 if (!eventConsumed) {//未消费掉事件
                     /*
                      * 关于弧长的计算
@@ -978,6 +1014,8 @@ public class WheelView extends View {
          * @param index 当前选择项的索引
          */
         void onSelected(int index);
+
+        void onScrolling();
 
     }
 

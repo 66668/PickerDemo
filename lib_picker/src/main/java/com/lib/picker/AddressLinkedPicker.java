@@ -11,26 +11,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.lib.picker.bean.AddressData;
 import com.lib.picker.bean.FifthBean;
 import com.lib.picker.bean.FirstBean;
 import com.lib.picker.bean.FourthBean;
 import com.lib.picker.bean.SecondBean;
 import com.lib.picker.bean.ThirdBean;
-import com.lib.picker.bean.AddressData;
-import com.lib.picker.wheelpicker.BaseWheelPicker;
 import com.lib.picker.bean.base.LinkedFirstItem;
 import com.lib.picker.bean.base.LinkedFourItem;
 import com.lib.picker.bean.base.LinkedSecondItem;
 import com.lib.picker.bean.base.LinkedThirdItem;
+import com.lib.picker.wheelpicker.BaseWheelPicker;
 import com.lib.picker.wheelpicker.OnWheelLinkedListener;
+import com.lib.picker.wheelpicker.OnWheelScrollListener;
 import com.lib.picker.wheelpicker.WheelView;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static android.view.Gravity.CENTER_VERTICAL;
 
 /**
- * 样式1：中间滑轮选择效果
  * ***********************************************
  * **                  _oo0oo_                  **
  * **                 o8888888o                 **
@@ -76,6 +77,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
 
     //================================变量--数据源变量========================================
     private AddressData provider = null;//数据源
+    private boolean hasLevel = true;//是否添加标签
     private Fst selectFirstItem;
     private Snd selectSecondItem;
     private Trd selectThirdtem;
@@ -88,6 +90,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
     //================================回调监听========================================
 
     OnWheelLinkedListener onWheelLinkedListener;
+    OnWheelScrollListener onWheelScrollListener;
 
     /**
      * 设置滑动过程数据联动监听
@@ -96,6 +99,10 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      */
     public void setOnWheelLinkedListener(OnWheelLinkedListener onWheelLinkedListener) {
         this.onWheelLinkedListener = onWheelLinkedListener;
+    }
+
+    public void addWheelScrollingListener(OnWheelScrollListener onWheelScrollListener) {
+        this.onWheelScrollListener = onWheelScrollListener;
     }
     //================================构造========================================
 
@@ -139,6 +146,10 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         this.provider = provider;
     }
 
+    public void setHasLevel(boolean hasLevel) {
+        this.hasLevel = hasLevel;
+    }
+
     /**
      * 设置默认选中
      *
@@ -159,9 +170,18 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
         if (onWheelLinkedListener != null) {
             onWheelLinkedListener.onWheelLinked(
                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition),
-                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
+                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
         }
 
+    }
+
+    /**
+     * 回归选择
+     */
+    public void resetChoose(){
+        if(firstView!=null){
+            firstView.resetChoose();
+        }
     }
 
     public Fst getSelectFirstItem() {
@@ -203,58 +223,64 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      * 获取结果
      */
     public String getRoomId(int first, int second, int third, int four, int five) {
-        FirstBean firstBean = provider.getFirstData().get(first);
-        if (provider.showNum == 1) {//2个选项
-            return "" + firstBean.getNodeId();
-        } else if (provider.showNum == 2) {
-            SecondBean secondBean = firstBean.getLists().get(second);
-            return "" + secondBean.getNodeId();
-        } else if (provider.showNum == 3) {
-            SecondBean secondBean = firstBean.getLists().get(second);
-            ThirdBean thirdBean = secondBean.getLists().get(third);
-            return "" + thirdBean.getNodeId();
-        } else if (provider.showNum == 4) {
-            SecondBean secondBean = firstBean.getLists().get(second);
-            ThirdBean thirdBean = secondBean.getLists().get(third);
-            FourthBean fourthBean = thirdBean.getLists().get(four);
-            return "" + fourthBean.getNodeId();
-        } else if (provider.showNum == 5) {
-            SecondBean secondBean = firstBean.getLists().get(second);
-            ThirdBean thirdBean = secondBean.getLists().get(third);
-            FourthBean fourthBean = thirdBean.getLists().get(four);
-            FifthBean fifthBean = fourthBean.getLists().get(five);
-            return "" + fifthBean.getNodeId();
+        try {
+            FirstBean firstBean = provider.getFirstData().get(first);
+            if (provider.showNum == 1) {//2个选项
+                return "" + firstBean.getNodeId();
+            } else if (provider.showNum == 2) {
+                SecondBean secondBean = firstBean.getLists().get(second);
+                return "" + secondBean.getNodeId();
+            } else if (provider.showNum == 3) {
+                SecondBean secondBean = firstBean.getLists().get(second);
+                ThirdBean thirdBean = secondBean.getLists().get(third);
+                return "" + thirdBean.getNodeId();
+            } else if (provider.showNum == 4) {
+                SecondBean secondBean = firstBean.getLists().get(second);
+                ThirdBean thirdBean = secondBean.getLists().get(third);
+                FourthBean fourthBean = thirdBean.getLists().get(four);
+                return "" + fourthBean.getNodeId();
+            } else if (provider.showNum == 5) {
+                SecondBean secondBean = firstBean.getLists().get(second);
+                ThirdBean thirdBean = secondBean.getLists().get(third);
+                FourthBean fourthBean = thirdBean.getLists().get(four);
+                FifthBean fifthBean = fourthBean.getLists().get(five);
+                return "" + fifthBean.getNodeId();
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            Log.d("SJY", e.toString());
+            return "";
         }
-        return "";
     }
 
     /**
      * 获取结果
      */
-    public String getRoomName(int first, int second, int third, int four, int five) {
+    public String getSimpleRoomName(int first, int second, int third, int four, int five) {
         FirstBean firstBean = provider.getFirstData().get(first);
 
         if (provider.showNum == 1) {//
-            return firstBean.getName() + "房间";
+            return firstBean.getName();
         } else if (provider.showNum == 2) {//单元下
             SecondBean secondBean = firstBean.getLists().get(second);
-            return firstBean.getName() + "层" + secondBean.getName() + "房间";
+            return firstBean.getName() + secondBean.getName();
         } else if (provider.showNum == 3) {//楼
             SecondBean secondBean = firstBean.getLists().get(second);
             ThirdBean thirdBean = secondBean.getLists().get(third);
-            return secondBean.getName() + "层" + thirdBean.getName() + "房间";
+            return secondBean.getName() + thirdBean.getName();
         } else if (provider.showNum == 4) {//分区下
             SecondBean secondBean = firstBean.getLists().get(second);
             ThirdBean thirdBean = secondBean.getLists().get(third);
             FourthBean fourthBean = thirdBean.getLists().get(four);
 
-            return secondBean.getName() + "单元" + thirdBean.getName() + "层" + fourthBean.getName() + "房间";
+            return secondBean.getName() + thirdBean.getName() + fourthBean.getName();
         } else if (provider.showNum == 5) {//小区下
             SecondBean secondBean = firstBean.getLists().get(second);
             ThirdBean thirdBean = secondBean.getLists().get(third);
             FourthBean fourthBean = thirdBean.getLists().get(four);
             FifthBean fifthBean = fourthBean.getLists().get(five);
-            return secondBean.getName() + "楼" + thirdBean.getName() + "单元" + fourthBean.getName() + "层" + fifthBean.getName() + "房间";
+            return secondBean.getName() + thirdBean.getName() + fourthBean.getName() + fifthBean.getName();
         }
         return "";
     }
@@ -265,24 +291,30 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
      *
      * @return
      */
+    private WheelView firstView = null;
     private WheelView secondView = null;
     private WheelView thirdView = null;
     private WheelView fourthView = null;
     private WheelView fifthView = null;
 
-    private void buildPicker() {
+    /**
+     * @param hasLevel 是否添加标签
+     */
+    private void buildPicker(boolean hasLevel) {
 
         //--------------------------------------------------------------------
         //-----------------------------根据showNum,动态添加选择器个数---------------------------------------
         //--------------------------------------------------------------------
         //01创建
-        WheelView firstView = createWheelView();
+        firstView = createWheelView();
         firstView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
         addView(firstView);
-        //01标签
-        TextView labelView1 = createLabelView();
-        labelView1.setText(provider.lables[0]);
-        addView(labelView1);
+        if (hasLevel) {
+            //01标签
+            TextView labelView1 = createLabelView();
+            labelView1.setText(provider.lables[0]);
+            addView(labelView1);
+        }
         //01绑定数据
         firstView.setItems(provider.initFirstData(), selectFirstPosition);
 
@@ -292,10 +324,12 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             secondView = createWheelView();
             secondView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(secondView);
-            //02标签
-            TextView labelView2 = createLabelView();
-            labelView2.setText(provider.lables[1]);
-            addView(labelView2);
+            if (hasLevel) {
+                //02标签
+                TextView labelView2 = createLabelView();
+                labelView2.setText(provider.lables[1]);
+                addView(labelView2);
+            }
             //02绑定数据
             secondView.setItems(provider.initSecondData(selectFirstPosition), selectSecondPosition);
         }
@@ -306,10 +340,12 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             thirdView = createWheelView();
             thirdView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(thirdView);
-            //03标签
-            TextView labelView3 = createLabelView();
-            labelView3.setText(provider.lables[2]);
-            addView(labelView3);
+            if (hasLevel) {
+                //03标签
+                TextView labelView3 = createLabelView();
+                labelView3.setText(provider.lables[2]);
+                addView(labelView3);
+            }
             //03绑定数据
             thirdView.setItems(provider.initThirdData(selectFirstPosition, selectSecondPosition), selectThirdPosition);
         }
@@ -320,10 +356,12 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             fourthView = createWheelView();
             fourthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fourthView);
-            //04标签
-            TextView labelView4 = createLabelView();
-            labelView4.setText(provider.lables[3]);
-            addView(labelView4);
+            if (hasLevel) {
+                //04标签
+                TextView labelView4 = createLabelView();
+                labelView4.setText(provider.lables[3]);
+                addView(labelView4);
+            }
             //04绑定数据
             fourthView.setItems(provider.initFourthData(selectFirstPosition, selectSecondPosition, selectThirdPosition), selectFourthPosition);
 
@@ -334,10 +372,12 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             fifthView = createWheelView();
             fifthView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, firstColumnWeight));
             addView(fifthView);
-            //05标签
-            TextView labelView5 = createLabelView();
-            labelView5.setText(provider.lables[4]);
-            addView(labelView5);
+            if (hasLevel) {
+                //05标签
+                TextView labelView5 = createLabelView();
+                labelView5.setText(provider.lables[4]);
+                addView(labelView5);
+            }
             //05绑定数据
             fifthView.setItems(provider.initFifthData(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition), selectFifthPosition);
         }
@@ -425,24 +465,31 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     if (provider.showNum == 1) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, -1, -1, -1, -1),
-                                getRoomName(selectFirstPosition, -1, -1, -1, -1));
+                                getSimpleRoomName(selectFirstPosition, -1, -1, -1, -1));
                     } else if (provider.showNum == 2) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, 0, -1, -1, -1),
-                                getRoomName(selectFirstPosition, 0, -1, -1, -1));
+                                getSimpleRoomName(selectFirstPosition, 0, -1, -1, -1));
                     } else if (provider.showNum == 3) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, 0, 0, -1, -1),
-                                getRoomName(selectFirstPosition, 0, 0, -1, -1));
+                                getSimpleRoomName(selectFirstPosition, 0, 0, -1, -1));
                     } else if (provider.showNum == 4) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, 0, 0, 0, -1),
-                                getRoomName(selectFirstPosition, 0, 0, 0, -1));
+                                getSimpleRoomName(selectFirstPosition, 0, 0, 0, -1));
                     } else if (provider.showNum == 5) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, 0, 0, 0, 0),
-                                getRoomName(selectFirstPosition, 0, 0, 0, 0));
+                                getSimpleRoomName(selectFirstPosition, 0, 0, 0, 0));
                     }
+                }
+            }
+
+            @Override
+            public void onScrolling() {
+                if (onWheelLinkedListener != null) {
+                    onWheelScrollListener.onWheelScrolling();
                 }
             }
 
@@ -507,20 +554,27 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                         if (provider.showNum == 2) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, -1, -1, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, -1, -1, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, -1, -1, -1));
                         } else if (provider.showNum == 3) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, 0, -1, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, -1, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, 0, -1, -1));
                         } else if (provider.showNum == 4) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, 0, 0, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, 0, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, 0, 0, -1));
                         } else if (provider.showNum == 5) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, 0, 0, 0),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, 0, 0, 0));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, 0, 0, 0));
                         }
+                    }
+                }
+
+                @Override
+                public void onScrolling() {
+                    if (onWheelLinkedListener != null) {
+                        onWheelScrollListener.onWheelScrolling();
                     }
                 }
 
@@ -567,18 +621,25 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                         if (provider.showNum == 3) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, -1, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, -1, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, -1, -1));
                         } else if (provider.showNum == 4) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, -1));
                         } else if (provider.showNum == 5) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, 0, 0));
                         }
                     }
 
+                }
+
+                @Override
+                public void onScrolling() {
+                    if (onWheelLinkedListener != null) {
+                        onWheelScrollListener.onWheelScrolling();
+                    }
                 }
             });
         }
@@ -607,12 +668,19 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                         if (provider.showNum == 4) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, -1),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, -1));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, -1));
                         } else if (provider.showNum == 5) {
                             onWheelLinkedListener.onWheelLinked(
                                     getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0),
-                                    getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0));
+                                    getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, 0));
                         }
+                    }
+                }
+
+                @Override
+                public void onScrolling() {
+                    if (onWheelLinkedListener != null) {
+                        onWheelScrollListener.onWheelScrolling();
                     }
                 }
             });
@@ -633,7 +701,14 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
                     if (onWheelLinkedListener != null) {
                         onWheelLinkedListener.onWheelLinked(
                                 getRoomId(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition),
-                                getRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
+                                getSimpleRoomName(selectFirstPosition, selectSecondPosition, selectThirdPosition, selectFourthPosition, selectFifthPosition));
+                    }
+                }
+
+                @Override
+                public void onScrolling() {
+                    if (onWheelLinkedListener != null) {
+                        onWheelScrollListener.onWheelScrolling();
                     }
                 }
             });
@@ -654,7 +729,7 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
             return;
         }
         setWidth();
-        buildPicker();
+        buildPicker(hasLevel);
     }
 
     /**
@@ -663,6 +738,8 @@ public class AddressLinkedPicker<Fst extends LinkedFirstItem<Snd>//第一条数�
     private void buildProgress() {
         ProgressBar progressBar = new ProgressBar(context);
         progressBar.setIndeterminateDrawable(context.getDrawable(R.drawable.progress_rotate));
+        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);
+        progressBar.setLayoutParams(params);
         addView(progressBar);
     }
 

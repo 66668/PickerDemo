@@ -22,6 +22,7 @@ public abstract class BaseWheelPicker extends LinearLayout {
     protected float lineSpaceMultiplier = WheelView.LINE_SPACE_MULTIPLIER;
     protected int textPadding = WheelView.TEXT_PADDING;
     protected int textSize = WheelView.TEXT_SIZE;
+    protected int labelTextSize = WheelView.TEXT_SIZE;
     protected Typeface typeface = Typeface.DEFAULT;
     protected int textColorNormal = WheelView.TEXT_COLOR_NORMAL;
     protected int textColorFocus = WheelView.TEXT_COLOR_FOCUS;
@@ -38,25 +39,25 @@ public abstract class BaseWheelPicker extends LinearLayout {
      */
     public BaseWheelPicker(Context context) {
         super(context);
-        this.context =context;
+        this.context = context;
         buildView();
     }
 
     public BaseWheelPicker(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context =context;
+        this.context = context;
         buildView();
     }
 
     public BaseWheelPicker(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context =context;
+        this.context = context;
         buildView();
     }
 
     public BaseWheelPicker(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        this.context =context;
+        this.context = context;
         buildView();
     }
 
@@ -94,6 +95,13 @@ public abstract class BaseWheelPicker extends LinearLayout {
      */
     public void setTextSize(int textSize) {
         this.textSize = textSize;
+    }
+
+    /**
+     * 设置文字大小
+     */
+    public void setLableTextSize(int textSize) {
+        this.labelTextSize = textSize;
     }
 
     /**
@@ -204,7 +212,7 @@ public abstract class BaseWheelPicker extends LinearLayout {
     }
 
     /**
-     * @deprecated use {@link #setDividerConfig(WheelView.DividerConfig)} instead
+     *
      */
     @Deprecated
     public void setLineConfig(WheelView.DividerConfig config) {
@@ -241,7 +249,6 @@ public abstract class BaseWheelPicker extends LinearLayout {
     }
 
 
-
     /**
      * 动态创建一个选择器
      *
@@ -271,7 +278,7 @@ public abstract class BaseWheelPicker extends LinearLayout {
         TextView labelView = new TextView(context);
         labelView.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         labelView.setTextColor(labelTextColor);
-        labelView.setTextSize(textSize);
+        labelView.setTextSize(labelTextSize);
         return labelView;
     }
 

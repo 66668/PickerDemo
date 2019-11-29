@@ -2,7 +2,6 @@ package com.lib.picker.bean;
 
 import android.support.annotation.NonNull;
 
-
 import com.lib.picker.bean.base.IAddressData;
 
 import java.io.Serializable;
@@ -10,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 选择器-数据提供类（如果想添加省市区选择器等，创建该类型，不要放到AddressPicker中） 根据参数，可以给选择器动态提供数据
+ * TODO
+ * 地址选择器数据提供类（如果想添加省市区选择器等，创建该类型，不要放到AddressPicker中） 根据参数，可以给选择器动态提供数据
  */
 public class AddressData
         implements Serializable, IAddressData<FirstBean, SecondBean, ThirdBean, FourthBean, FifthBean> {
