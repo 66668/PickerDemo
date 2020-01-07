@@ -1,21 +1,22 @@
 package com.sjy.picker;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.alibaba.fastjson.JSONObject;
-import com.lib.picker.AddressLinkedPicker;
-import com.lib.picker.bean.AddressData;
+import com.lib.picker.wheelpicker.AddressLinkedPicker;
+import com.lib.picker.wheelpicker.bean.AddressData;
 import com.lib.picker.wheelpicker.OnWheelLinkedListener;
 import com.lib.picker.wheelpicker.OnWheelScrollListener;
 import com.lib.picker.wheelpicker.WheelView;
 import com.sjy.picker.utils.DataUtils;
-import com.sjy.picker.utils.JsonUtils;
 import com.sjy.picker.utils.Logg;
 
 /**
@@ -76,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "点我干嘛，不够看的嘛", Toast.LENGTH_SHORT).show();
                 //回归位置
                 picker.resetChoose();
+            }
+        });
+
+        //**************************************
+        findViewById(R.id.tv_second).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RoomPickerAct.class);
+                startActivity(intent);
             }
         });
     }

@@ -1,0 +1,10 @@
+<resources>
+    <color name="item_number_text">#0099ff</color>
+
+    <!--字体提示色-->
+    <color name="input_select_color">#FFF</color>
+    <color name="common_color">#419dfe</color>
+    <color name="common_black_color">#333333</color>
+    <color name="tips_color">#6F6D6D</color>
+
+</resources>

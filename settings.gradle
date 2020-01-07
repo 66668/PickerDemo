@@ -1,1 +1,1 @@
-include ':app', ':lib_picker'
+include ':app', ':lib_picker', ':lib_roompicker'

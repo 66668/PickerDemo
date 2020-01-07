@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ly_untouch"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingTop="20px">
+
+    <TextView
+        android:id="@+id/tv_room_untouch"
+        android:layout_width="200px"
+        android:layout_height="60px"
+        android:background="@drawable/et_input"
+        android:ellipsize="end"
+        android:gravity="center_vertical|start"
+        android:lines="1"
+        android:paddingLeft="20px"
+        android:paddingRight="40px"
+        android:textColor="@color/common_color"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="30px"
+        android:layout_height="30px"
+        android:layout_above="@+id/tv_room_untouch"
+        android:layout_marginStart="-40px"
+        android:layout_marginBottom="-45px"
+        android:layout_toEndOf="@+id/tv_room_untouch"
+        android:background="@drawable/bg_itemroom_num"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+</RelativeLayout>
+

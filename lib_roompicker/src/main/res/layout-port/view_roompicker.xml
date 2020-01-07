@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?><!--自定义房间筛选器-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ly_roomBoot"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/room_picker_total_height_01"
+    android:background="@drawable/picker_bg"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+    <!-- 房间按钮-->
+    <LinearLayout
+        android:id="@+id/ly_roomTitle"
+        android:layout_width="match_parent"
+        android:layout_height="60px"
+        android:orientation="horizontal"
+        android:paddingLeft="60px"
+        android:paddingRight="60px"
+        android:weightSum="5">
+
+        <RelativeLayout
+            android:id="@+id/ly_roomTitle_01"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/room_title_01"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_room_title"
+                android:gravity="center"
+                android:padding="6px"
+                android:text="区域"
+                android:textColor="@drawable/bg_room_title_text"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ly_roomTitle_02"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/room_title_02"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_room_title"
+                android:gravity="center"
+                android:padding="6px"
+                android:text="楼栋"
+                android:textColor="@drawable/bg_room_title_text"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ly_roomTitle_03"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/room_title_03"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_room_title"
+                android:gravity="center"
+                android:padding="6px"
+                android:text="单元"
+                android:textColor="@drawable/bg_room_title_text"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ly_roomTitle_04"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/room_title_04"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_room_title"
+                android:gravity="center"
+                android:padding="6px"
+                android:text="楼层"
+                android:textColor="@drawable/bg_room_title_text"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ly_roomTitle_05"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/room_title_05"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/bg_room_title"
+                android:gravity="center"
+                android:padding="6px"
+                android:text="房间"
+                android:textColor="@drawable/bg_room_title_text"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_below="@+id/ly_roomTitle"
+        android:background="#9BD3F9" />
+
+    <RelativeLayout
+        android:id="@+id/ly_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ly_pager"
+        android:layout_below="@+id/ly_roomTitle"
+        android:layout_marginTop="2px"
+        android:background="@drawable/picker_bg">
+
+        <TextView
+            android:id="@+id/tv_errorData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="数据加载错误，点击重试"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/progress_rotate"
+            android:visibility="gone" />
+
+        <!-- 邀请码输入框 -->
+        <RelativeLayout
+            android:id="@+id/ly_untouch_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/room_et"
+                android:layout_width="310px"
+                android:layout_height="80px"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/et_input"
+                android:gravity="center"
+                android:textColor="@color/common_color"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/room_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/room_et"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40px"
+                android:text="请用键盘输入房间号"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/tips_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/room_tips"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5px"
+                android:gravity="center|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/room_et"
+                    android:layout_centerHorizontal="true"
+                    android:text="按"
+                    android:textColor="#6D6B6B"
+                    android:textSize="@dimen/tips_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tips_call"
+                    android:padding="2px" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/room_et"
+                    android:layout_centerHorizontal="true"
+                    android:text="开始呼叫"
+                    android:textColor="#6D6B6B"
+                    android:textSize="@dimen/tips_size" />
+            </LinearLayout>
+        </RelativeLayout>
+        <!--        <com.rejia.mainhome.widget.roompicker.TextInputView-->
+        <!--            android:id="@+id/textInputView"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_centerInParent="true"-->
+        <!--            android:gravity="center"-->
+        <!--            android:minWidth="100px"-->
+        <!--            android:minHeight="20px"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            android:visibility="gone"-->
+        <!--            app:inputBackground="@drawable/input_bg_style"-->
+        <!--            app:inputColor="@color/input_select_color"-->
+        <!--            app:inputHeight="104px"-->
+        <!--            app:inputNumber="4"-->
+        <!--            app:inputSize="36px"-->
+        <!--            app:inputType="number"-->
+        <!--            app:inputWidth="88px" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/room_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/picker_bg"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/ly_pager"
+        android:layout_width="match_parent"
+        android:layout_height="60px"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/picker_bg"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_pager"
+            android:layout_width="80px"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="1/1"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/ly_uppager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/tv_pager"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/img_uppager"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:background="@drawable/bg_itemroom_num"
+                android:gravity="center"
+                android:text="*"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_uppager"
+                android:layout_width="80px"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="上页"
+                android:textColor="@color/common_color"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_nextpager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/tv_pager"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/img_nextpager"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:background="@drawable/bg_itemroom_num"
+                android:gravity="center"
+                android:text="#"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_nextpager"
+                android:layout_width="80px"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="下页"
+                android:textColor="@color/common_color"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

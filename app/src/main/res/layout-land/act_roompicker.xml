@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:ignore="MissingDefaultResource">
+
+    <RelativeLayout
+        android:id="@+id/ly_room"
+        android:layout_width="@dimen/fragment_land_width"
+        android:layout_height="@dimen/room_land_total_height_01"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/fragment_margin_bottom"
+        android:background="@drawable/bg_roompicker"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/room_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40px"
+            android:layout_marginTop="20px"
+            android:text="请选择房间号进行呼叫"
+            android:textColor="@color/common_black_color"
+            android:textSize="@dimen/tips_size"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/ly_room_rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10px"
+            android:layout_marginEnd="30px"
+            android:layout_toStartOf="@+id/ly_room_close"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/untouch_reset_img"
+                android:layout_width="35px"
+                android:layout_height="35px"
+                android:background="@drawable/bg_itemroom_num"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/room_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10px"
+                android:text="返回"
+                android:textColor="@color/common_color"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ly_room_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10px"
+            android:layout_marginEnd="30px"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/untouch_roomcolse_img"
+                android:layout_width="35px"
+                android:layout_height="35px"
+                android:background="@drawable/bg_itemroom_num"
+                android:gravity="center"
+                android:text="*"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/untouch_tips_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/room_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10px"
+                android:text="关闭"
+                android:textColor="@color/common_color"
+                android:textSize="@dimen/tips_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <!-- 自定义房间控件 -->
+        <com.sjy.roompicker.roompicker.RoomPicker
+            android:id="@+id/picker"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/room_land_picker_height_01"
+            android:layout_marginTop="60px"
+            android:background="@drawable/picker_bg" />
+
+    </RelativeLayout>
+</RelativeLayout>

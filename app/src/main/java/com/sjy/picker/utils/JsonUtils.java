@@ -5,12 +5,12 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.lib.picker.bean.FifthBean;
-import com.lib.picker.bean.FirstBean;
-import com.lib.picker.bean.FourthBean;
-import com.lib.picker.bean.SecondBean;
-import com.lib.picker.bean.ThirdBean;
-import com.lib.picker.bean.AddressData;
+import com.lib.picker.wheelpicker.bean.FifthBean;
+import com.lib.picker.wheelpicker.bean.FirstBean;
+import com.lib.picker.wheelpicker.bean.FourthBean;
+import com.lib.picker.wheelpicker.bean.SecondBean;
+import com.lib.picker.wheelpicker.bean.ThirdBean;
+import com.lib.picker.wheelpicker.bean.AddressData;
 
 
 import java.util.ArrayList;

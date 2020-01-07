@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<resources>
+
+    <!--fragment的总宽度 -->
+    <dimen name="fragment_land_width">940px</dimen>
+    <dimen name="fragment_port_width">760px</dimen>
+    <!--room fragment布局的高度-->
+    <dimen name="fragment_room_height">420px</dimen>
+    <!--fragment布局高的度-->
+    <dimen name="fragment_common_height">154px</dimen>
+    <dimen name="fragment_more_height_02">310px</dimen>
+    <dimen name="fragment_margin_bottom">172px</dimen>
+    <!--提示字体统一大小-->
+    <dimen name="tips_size">14sp</dimen>
+    <dimen name="untouch_tips_size">15sp</dimen>
+    <!--==========房间筛选器尺寸=============-->
+    <!--竖屏： -->
+    <dimen name="room_port_total_height_01">530px</dimen>
+    <dimen name="room_picker_total_height_01">450px</dimen>
+    <!--竖屏：都增加160高度  -->
+    <dimen name="room_port_total_height_02">700px</dimen>
+    <dimen name="room_picker_total_height_02">620px</dimen>
+
+    <!--横屏： -->
+    <dimen name="room_land_total_height_01">390px</dimen>
+    <dimen name="room_land_picker_height_01">330px</dimen>
+    <!--横屏  都增加120高度  -->
+    <dimen name="room_land_total_height_02">510px</dimen>
+    <dimen name="room_land_picker_height_02">450px</dimen>
+
+
+</resources>
